@@ -1,12 +1,13 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row mt-5">
             <div class="col-md-12">
-                <div class="card mt-5">
+                <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Users List</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">Add User
+                            <button type="submit" class="btn btn-success" data-toggle="modal"
+                                    data-target="#usersModal">Add User
                                 <i class="fa fa-user-plus fa-fw"></i></button>
                         </div>
                     </div>
@@ -36,11 +37,12 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="usersModal" tabindex="-1" role="dialog" aria-labelledby="modal-title"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Add User</h5>
+                        <h5 class="modal-title" id="modal-title">Add User</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -83,7 +85,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" v-on:click="testSweet()">
+                                Close</button>
                             <button type="submit" class="btn btn-primary">Create</button>
                         </div>
                     </form>
@@ -117,9 +120,11 @@
             createUser() {
                 this.$Progress.start()
                 this.form.post('/api/users')
-                    .then(({data}) => {
-                        console.log(data)
-                    })
+                $('#usersModal').modal('hide')
+                Toast.fire({
+                    type: 'success',
+                    title: 'User created successfully'
+                })
                 this.$Progress.finish()
             }
         },
