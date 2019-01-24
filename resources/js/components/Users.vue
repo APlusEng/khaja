@@ -5,36 +5,32 @@
                 <div class="card mt-5">
                     <div class="card-header">
                         <h3 class="card-title">Users List</h3>
-
                         <div class="card-tools">
                             <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">Add User
                                 <i class="fa fa-user-plus fa-fw"></i></button>
-                                
                         </div>
                     </div>
-                    <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
                         <table class="table table-hover">
-                            <tbody><tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                            <tr>
-                                <td>183</td>
-                                <td>John Doe</td>
-                                <td>11-7-2014</td>
-                                <td><span class="tag tag-success">Approved</span></td>
-                                <td><a href="#"><i class="fa fa-edit"></i></a> || <a
-                                        href="#"><i class="fa fa-trash red"></i></a></td>
-                            </tr>
-                            
-
-                            </tbody></table>
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                <tr>
+                                    <td>183</td>
+                                    <td>John Doe</td>
+                                    <td>11-7-2014</td>
+                                    <td><span class="tag tag-success">Approved</span></td>
+                                    <td><a href="#"><i class="fa fa-edit"></i></a> || <a
+                                            href="#"><i class="fa fa-trash red"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- /.card-body -->
                 </div>
             </div>
         </div>
@@ -47,46 +43,48 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input v-model="form.name" type="text" name="name"
-                                   placeholder="Enter name"
-                                   class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                            <has-error :form="form" field="name"></has-error>
+                    <form @submit.prevent="createUser()">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input v-model="form.name" type="text" name="name"
+                                       placeholder="Enter name"
+                                       class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                                <has-error :form="form" field="name"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <input v-model="form.email" type="text" name="email"
+                                       placeholder="Enter email"
+                                       class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
+                                <has-error :form="form" field="email"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <input v-model="form.password" type="password" name="password"
+                                       placeholder="Enter password"
+                                       class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
+                                <has-error :form="form" field="password"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <textarea v-model="form.bio" type="text" name="bio"
+                                       placeholder="Bio"
+                                          class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }"></textarea>
+                                <has-error :form="form" field="bio"></has-error>
+                            </div>
+                            <div class="form-group">
+                                <select v-model="form.type" name="type"
+                                          class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
+                                    <option value="" selected>Select User Role</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">User</option>
+                                    <option value="author">Author</option>
+                                </select>
+                                <has-error :form="form" field="type"></has-error>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input v-model="form.email" type="text" name="email"
-                                   placeholder="Enter email"
-                                   class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
-                            <has-error :form="form" field="email"></has-error>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Create</button>
                         </div>
-                        <div class="form-group">
-                            <input v-model="form.password" type="password" name="password"
-                                   placeholder="Enter password"
-                                   class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
-                            <has-error :form="form" field="password"></has-error>
-                        </div>
-                        <div class="form-group">
-                            <textarea v-model="form.bio" type="text" name="bio"
-                                   placeholder="Bio"
-                                      class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }"></textarea>
-                            <has-error :form="form" field="bio"></has-error>
-                        </div>
-                        <div class="form-group">
-                            <select v-model="form.type" name="type"
-                                      class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
-                                <option value="" selected>Select User Role</option>
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
-                                <option value="author">Author</option>
-                            </select>
-                            <has-error :form="form" field="type"></has-error>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Create</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -105,6 +103,14 @@
                     bio: '',
                     photo: ''
                 })
+            }
+        },
+        methods: {
+            createUser() {
+                this.form.post('/api/users')
+                    .then(({data}) => {
+                        console.log(data)
+                    })
             }
         },
         mounted() {
