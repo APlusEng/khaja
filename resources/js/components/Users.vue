@@ -6,8 +6,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Users List</h3>
                         <div class="card-tools">
-                            <button type="submit" class="btn btn-success" data-toggle="modal"
-                                    data-target="#usersModal">Add User
+                            <button type="submit" @click="openModal()" class="btn btn-success">Add User
                                 <i class="fa fa-user-plus fa-fw"></i></button>
                         </div>
                     </div>
@@ -22,14 +21,14 @@
                                     <th>Registered at</th>
                                     <th>Action</th>
                                 </tr>
-                                <tr v-for="user in users" :key="user.id">
+                                <tr v-for="(user, index) in users" :key="user.id">
                                     <td>{{user.id}}</td>
                                     <td>{{user.name}}</td>
                                     <td>{{user.email}}</td>
                                     <td>{{user.type | upText}}</td>
                                     <td>{{user.created_at | myDate}}</td>
-                                    <td><a href="#"><i class="fa fa-edit"></i></a> || <a
-                                            href="#"><i class="fa fa-trash red"></i></a></td>
+                                    <td><a href="#" @click="editModal(user)"><i class="fa fa-edit"></i></a> || <a
+                                            href="#" v-on:click="deleteUser(user.id, index)"><i class="fa fa-trash red"></i></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -42,12 +41,13 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modal-title">Add User</h5>
+                        <h5 class="modal-title" id="modal-title" v-show="!editMode">Add User</h5>
+                        <h5 class="modal-title" id="modal-title" v-show="editMode">Update User's Data</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="createUser()">
+                    <form @submit.prevent="editMode ? updateUser() : createUser()">
                         <div class="modal-body">
                             <div class="form-group">
                                 <input v-model="form.name" type="text" name="name"
@@ -87,7 +87,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal" v-on:click="testSweet()">
                                 Close</button>
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="submit" class="btn btn-primary" v-show="!editMode">Create</button>
+                            <button type="submit" class="btn btn-success" v-show="editMode">Update</button>
                         </div>
                     </form>
                 </div>
@@ -100,8 +101,10 @@
     export default {
         data() {
             return {
+                editMode: false,
                 users: [],
                 form: new Form({
+                    id: '',
                     name: '',
                     email: '',
                     'password': '',
@@ -112,6 +115,17 @@
             }
         },
         methods: {
+            editModal(user) {
+                this.editMode = true;
+                this.form.reset();
+                $('#usersModal').modal('show');
+                this.form.fill(user);
+            },
+            openModal() {
+                this.editMode = false;
+                this.form.reset();
+                $('#usersModal').modal('show')                   
+            },
             loadUsers() {
                 axios.get('/api/users').then(response => {
                     this.users = response.data.data
@@ -119,13 +133,33 @@
             },
             createUser() {
                 this.$Progress.start()
-                this.form.post('/api/users')
-                $('#usersModal').modal('hide')
-                Toast.fire({
-                    type: 'success',
-                    title: 'User created successfully'
-                })
+                this.form.post('/api/users').then(response => {                   
+                    this.users.unshift(response.data);
+                    $('#usersModal').modal('hide')                   
+                });
+                
+                               
                 this.$Progress.finish()
+            },
+            deleteUser(id, index) {
+                console.log('user deeted');
+                this.form.delete('/api/users/' + id).then(response => {
+                    this.users.splice(index, 1);
+                }).catch(errors => {
+                    console.log(errors)
+                }) 
+            },
+            updateUser() {
+                console.log('update user');
+                this.form.put('/api/users/'+this.form.id)
+                .then(response => {
+                    var ind = this.users.findIndex(x => x.id == this.form.id)
+                    Vue.set(this.users, ind, response.data)
+                    $('#usersModal').modal('hide') 
+                })
+                .catch(() => {
+
+                })
             }
         },
         created() {

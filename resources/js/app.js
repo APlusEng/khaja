@@ -7,6 +7,7 @@
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
 
 import moment from 'moment'
@@ -81,7 +82,7 @@ Vue.filter('upText', function (value) {
 Vue.filter('myDate', function (value) {
     return moment(value).format('MMMM Do YY')
 })
-
+window.Fire = new Vue();
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
